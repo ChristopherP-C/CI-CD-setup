@@ -35,7 +35,7 @@ jobs:
             curl $RENDER_PRODUCTION_DEPLOYHOOK
 
 workflows:
-  run-tests-and-deploy-to-staging-hold-then-production:
+  run-tests-and-deploy-to-staging-then-production:
     jobs:
       - start-server
       - cypress/run:
@@ -47,18 +47,9 @@ workflows:
           filters:
             branches:
               only: main
-      - hold:
-          # TODO: How can we provide approval for the hold job?
-          # by going to CircleCI and clicking on the job and then clicking on the approve button
-          type: approval
+      - deploy-to-render-production:
           requires:
             - deploy-to-render-staging
-      - deploy-to-render-production:
-          # TODO: Why can we specify that the only requirement for this job is the hold job?
-          # comment to commit
-          # because the hold job is the only job that requires approval and the hold job requires the deploy-to-render-staging
-          requires:
-            - hold
           filters:
             branches:
               only: main
